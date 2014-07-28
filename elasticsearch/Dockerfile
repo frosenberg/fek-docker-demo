@@ -1,23 +1,15 @@
-FROM ubuntu:12:04
+FROM ubuntu
+MAINTAINER Florian Rosenberg "https://github.com/frosenberg"
 
-# general ubuntu stuff
-RUN apt-get update && apt-get -y upgrade
-RUN apt-get -y install wget curl
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && apt-get -y install curl sudo openjdk-7-jre-headless
+RUN curl http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add -
+RUN echo "deb http://packages.elasticsearch.org/elasticsearch/1.2/debian stable main" >> /etc/apt/sources.list
+RUN apt-get update -y && apt-get install -y elasticsearch
 
-# install java
-RUN apt-get install openjdk-7-jre-headless -y
+ADD run.sh /usr/local/bin/run
+RUN chmod +x /usr/local/bin/run
 
-# install elasticsearch as debian package
-RUN wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.2.deb
-RUN dpkg -i elasticsearch-1.2.2.deb
-
-# install service wrapper
-RUN curl -L http://github.com/elasticsearch/elasticsearch-servicewrapper/tarball/master | tar -xz
-RUN mv *servicewrapper*/service /usr/local/share/elasticsearch/bin/
-RUN rm -Rf *servicewrapper*
-RUN /usr/local/share/elasticsearch/bin/service/elasticsearch install
-RUN ln -s `readlink -f /usr/local/share/elasticsearch/bin/service/elasticsearch` /usr/local/bin/rcelasticsearch
-RUN service elasticsearch start
-
-EXPOSE 9200
-EXPOSE 9300 
+EXPOSE 9200 9300
+VOLUME ["/var/lib/elasticsearch"]
+CMD ["/usr/local/bin/run"]
