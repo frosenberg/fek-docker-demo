@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 MAINTAINER Florian Rosenberg "https://github.com/frosenberg"
 
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update -y && apt-get install -y \
+RUN apt-get update && apt-get install -y \
       apt-utils \
       curl \
       libcurl4-gnutls-dev \
@@ -25,5 +25,6 @@ ENV ES_HOST elasticsearch.dev.docker
 ENV ES_PORT 9200
 
 EXPOSE 8888 24224
-ENTRYPOINT ["/usr/sbin/td-agent --use-v1-config"]
-CMD [" -o", "/var/log/td-agent/td-agent.log"]
+CMD [ "--use-v1-config" ] 
+# "-o", "/var/log/td-agent/td-agent.log"]
+ENTRYPOINT ["/usr/sbin/td-agent"]

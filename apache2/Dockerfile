@@ -18,6 +18,7 @@ RUN mkdir /var/lock/apache2 # fails to start without this line
 RUN mkdir /var/run/apache2 # fails to start without this line
 
 ADD config/td-agent.conf /etc/td-agent/td-agent.conf
+ADD config/rsyslog.conf /etc/rsyslog.d/rsyslog-host.conf 
 ADD config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Please override accordingly with docker run -e
